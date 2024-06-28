@@ -18,7 +18,6 @@ WHERE order_customer_id IN (
 )
 
 -- Exercise 3 - Subquery in SELECT Clause
--- TODO: FIX
 SELECT product_name, CAST(AVG(oi.order_item_subtotal) AS DECIMAL(18, 2))[average_price]
 FROM orders o, order_items oi, products p
 WHERE FORMAT(order_date, 'yyyy-MM') = '2013-10' AND
@@ -42,13 +41,16 @@ GROUP BY product_category_id
 SELECT TOP 3 * FROM number_of_prod ORDER BY num_products DESC;
 
 -- Exercise 6 - nested CTEs
-WITH avg_spent_in_dec AS(
-	SELECT order_item_order_id, avg(order_item_subtotal),
-	FROM order_items oi 
-	GROUP BY order_item_order_id, order_item_subtotal 
-	WHERE FORMAT(
-),
-cte2 AS(
-	SELECT order_item_order_id FROM avg_spent_in_dec
+-- TODO: Make nested 
+WITH cust_dec AS(
+	SELECT order_customer_id
+	FROM orders
+	WHERE DATEPART(MONTH, order_date) = 12 AND
+		order_id IN 
+		((SELECT order_item_order_id 
+			FROM order_items 
+			GROUP BY order_item_order_id, order_item_subtotal 
+			HAVING order_item_subtotal > 
+				(SELECT AVG(order_item_subtotal) FROM order_items)))
 )
-SELECT * FROM CTE2;
+SELECT order_customer_id FROM cust_dec;
