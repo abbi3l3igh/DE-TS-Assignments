@@ -78,12 +78,12 @@ WHERE nq.order_item_product_id = p.product_id
 ORDER BY nq.revenue DESC
 
 -- Exercise 5
+-- TODO: FINISH
 WITH nq AS (
 	SELECT 
 	product_id,
 	product_category_id,
 	product_name,
-	department_id,
 	dense_rank() OVER(
 		PARTITION BY department_id
 		ORDER BY salary DESC
